@@ -37,6 +37,23 @@ then tap **Refresh schedule** in the app — no code changes, no redeploy.
 
 Leave a cell blank if it doesn't apply. Empty rows are ignored.
 
+## Auto-sync from the free-form planning tab (Sheet1)
+
+If you'd rather keep planning in the messy **Sheet1** layout and not retype rows
+into `Schedule`, install the one-click sync script:
+
+1. In the sheet: **Extensions ▸ Apps Script**.
+2. Delete any placeholder code, paste the contents of
+   [`scripts/SyncSchedule.gs`](scripts/SyncSchedule.gs), and **Save**.
+3. Reload the spreadsheet tab. A **Trip Tools** menu appears.
+4. **Trip Tools ▸ Sync to Schedule** — the first time, approve the permission
+   prompt (it only edits this spreadsheet). It rebuilds the `Schedule` tab,
+   one row per day, from Sheet1.
+
+Run it again whenever you've updated Sheet1, then tap **Refresh schedule** in the
+app. The sync **overwrites** the `Schedule` tab, so make day-level tweaks in
+Sheet1 (or stop using the sync and edit `Schedule` directly — not both).
+
 ## Daily use
 
 - Edit cells in the `Schedule` tab → tap **Refresh schedule** in the app.
