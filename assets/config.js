@@ -6,9 +6,13 @@
 window.TRIP_CONFIG = {
   // The Google Sheet that holds the schedule.
   // 1) The sheet must be shared as "Anyone with the link can view".
-  // 2) The schedule lives on a tab named exactly SHEET_TAB (see UPDATING.md).
+  // 2) SHEET_GID identifies the schedule tab. To find it: open the sheet, click
+  //    the schedule tab, and read the number after "gid=" in the browser URL.
+  //    (The "Schedule" tab in this sheet is gid 105940139.)
+  // We read the tab's *displayed* CSV (export endpoint) rather than the gviz
+  // "typed" endpoint, so Google's locale date-guessing can't mangle the dates.
   SHEET_ID: "18bCsd6E7QjML369KbAXV1BbxzqrQ_6qNyUSlA58EPzY",
-  SHEET_TAB: "Schedule",
+  SHEET_GID: "105940139",
 
   // Year used when a Date cell omits the year (e.g. "29-Jun").
   TRIP_YEAR: 2026,

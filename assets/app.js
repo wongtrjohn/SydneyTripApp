@@ -4,13 +4,33 @@ const CFG = window.TRIP_CONFIG;
 const CACHE_KEY = "SYDNEY_TRIP_CACHE_v1";
 
 // ── Data source ──────────────────────────────────────────────────────────────
-// gviz CSV endpoint: reads a tab by NAME (so adding/removing tabs never breaks
-// the link) and sends CORS headers, so we can fetch it straight from the browser.
+// "export" CSV endpoint: returns the tab's DISPLAYED values as plain text (no
+// type-guessing, no header merging) and sends CORS headers, so we can fetch it
+// straight from the browser and parse dates/times ourselves.
 function sheetUrl() {
-  const base = `https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq`;
-  const q = new URLSearchParams({ tqx: "out:csv", sheet: CFG.SHEET_TAB });
+  const base = `https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/export`;
+  const q = new URLSearchParams({ format: "csv", gid: CFG.SHEET_GID });
   // cache-buster so "Refresh" always pulls the latest, never a stale CDN copy
   return `${base}?${q.toString()}&_=${Date.now()}`;
+}
+
+// Repair common "mojibake" — UTF-8 text that was pasted through a CP1252 path,
+// so e.g. "·" arrives as "Â·" and "—" as "â€". Safety net for copy-paste.
+const MOJIBAKE = [
+  ["â€”", "—"], // —
+  ["â€“", "–"], // –
+  ["â€™", "’"], // ’
+  ["â€˜", "‘"], // ‘
+  ["â€œ", "“"], // “
+  ["â€", "”"], // ”
+  ["â€¦", "…"], // …
+  ["Â·", "·"],       // ·
+  ["Â ", " "],            // nbsp
+];
+function clean(s) {
+  if (!s) return s;
+  for (const [bad, good] of MOJIBAKE) s = s.split(bad).join(good);
+  return s.replace(/Â(?=[ -¿])/g, "");
 }
 
 // ── CSV parsing (handles quoted fields, commas, and "" escapes) ──────────────
@@ -123,13 +143,13 @@ function buildDays(objs) {
   for (const o of objs) {
     const d = parseDate(o.date);
     if (!d) continue;
-    const activity = o.activity || o.event || o.title || "";
+    const activity = clean(o.activity || o.event || o.title || "");
     if (!activity && !o.location && !o.start && !o.details) continue; // skip blanks
     const key = isoKey(d);
     if (!map.has(key)) {
       map.set(key, {
         key, date: d,
-        label: o.day || d.toLocaleDateString("en-AU", { weekday: "long" }),
+        label: clean(o.day) || d.toLocaleDateString("en-AU", { weekday: "long" }),
         dateLabel: d.toLocaleDateString("en-AU", { day: "numeric", month: "long" }),
         items: [],
       });
@@ -137,8 +157,8 @@ function buildDays(objs) {
     map.get(key).items.push({
       start: o.start || o.time || "",
       end: o.end || "",
-      activity, location: o.location || "", maplink: o.maplink || o.link || "",
-      details: o.details || o.detail || o.notes || "",
+      activity, location: clean(o.location || ""), maplink: o.maplink || o.link || "",
+      details: clean(o.details || o.detail || o.notes || ""),
       _min: parseMin(o.start || o.time || ""),
     });
   }
@@ -230,7 +250,7 @@ function App() {
       const text = await res.text();
       const objs = rowsToObjects(parseCSV(text));
       const built = buildDays(objs);
-      if (!built.length) throw new Error("No rows found — check the tab name is \"" + CFG.SHEET_TAB + "\" and it has a header row.");
+      if (!built.length) throw new Error("No dated rows found — check the tab (gid " + CFG.SHEET_GID + ") has a header row with a \"Date\" column, and the sheet is shared as \"Anyone with the link\".");
       setDays(built);
       const at = new Date().toISOString();
       setUpdated(at);
