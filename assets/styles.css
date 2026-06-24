@@ -156,6 +156,33 @@ a { color: var(--accent); }
 .sched-loc { font-size: .82rem; word-break: break-word; }
 .sched-loc.plain { color: var(--text-muted); }
 
+/* ── Booking reference box ── */
+.booking-box {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-top: 6px;
+  background: var(--highlight-soft);
+  border: 1px dashed var(--highlight);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.booking-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.booking-label { font-size: .64rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--highlight); }
+.booking-ref {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .95rem; font-weight: 700; color: var(--text);
+  letter-spacing: .03em; word-break: break-all;
+}
+.booking-copy {
+  flex: 0 0 auto;
+  background: var(--highlight); color: #fff; border: none;
+  font-size: .78rem; font-weight: 700;
+  padding: 7px 13px; border-radius: 8px; cursor: pointer;
+  transition: background .15s, transform .05s;
+}
+.booking-copy:hover { filter: brightness(1.05); }
+.booking-copy:active { transform: scale(.96); }
+.booking-copy.copied { background: #4a8c5a; }
+
 .pill { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 999px; }
 .pill-now { background: var(--accent); color: #fff; }
 .pill-next { background: var(--highlight-soft); color: var(--highlight); }

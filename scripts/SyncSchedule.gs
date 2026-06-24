@@ -81,13 +81,13 @@ function syncToSchedule() {
   }
 
   // Build the flat rows.
-  var out = [["Date", "Day", "Start", "End", "Activity", "Location", "Map Link", "Details"]];
+  var out = [["Date", "Day", "Start", "End", "Activity", "Location", "Map Link", "Details", "Booking Reference"]];
+  var COLS = 9;
   days.forEach(function (d) {
     var start = "";
     for (var t = 0; t < d.times.length; t++) { if (d.times[t]) { start = normTime_(d.times[t]); break; } }
     var details = [];
     if (d.places.length > 1) details.push(d.places.slice(1).map(titleCase_).join("; "));
-    if (d.books.length) details.push("Booking: " + d.books.join(", "));
     out.push([
       isoDate_(d.date),
       titleCase_(d.day),
@@ -97,12 +97,13 @@ function syncToSchedule() {
       d.places.length ? titleCase_(d.places[0]) : "",
       "",
       details.join(" · "),
+      d.books.join(", "),   // Booking Reference — its own column
     ]);
   });
 
   // Write — clear old content, force plain-text format so dates/times aren't re-coerced.
-  target.getRange(1, 1, Math.max(target.getMaxRows(), out.length), 8).clearContent();
-  var range = target.getRange(1, 1, out.length, 8);
+  target.getRange(1, 1, Math.max(target.getMaxRows(), out.length), COLS).clearContent();
+  var range = target.getRange(1, 1, out.length, COLS);
   range.setNumberFormat("@");
   range.setValues(out);
 

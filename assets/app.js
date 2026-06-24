@@ -159,6 +159,7 @@ function buildDays(objs) {
       end: o.end || "",
       activity, location: clean(o.location || ""), maplink: o.maplink || o.link || "",
       details: clean(o.details || o.detail || o.notes || ""),
+      booking: clean(o.bookingreference || o.bookingref || o.booking || ""),
       _min: parseMin(o.start || o.time || ""),
     });
   }
@@ -193,6 +194,38 @@ function DayPicker({ days, selected, onChange, todayKey }) {
   );
 }
 
+function BookingRef({ value }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = value; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand("copy"); } catch {}
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  }
+  return (
+    <div className="booking-box">
+      <div className="booking-info">
+        <span className="booking-label">🎟️ Booking reference</span>
+        <code className="booking-ref">{value}</code>
+      </div>
+      <button
+        className={"booking-copy" + (copied ? " copied" : "")}
+        onClick={copy}
+        aria-label={"Copy booking reference " + value}
+      >
+        {copied ? "Copied ✓" : "Copy"}
+      </button>
+    </div>
+  );
+}
+
 function ScheduleItem({ item, state }) {
   const link = mapLink(item);
   return (
@@ -213,6 +246,7 @@ function ScheduleItem({ item, state }) {
             ? <a className="sched-loc" href={link} target="_blank" rel="noopener noreferrer">📍 {item.location}</a>
             : <span className="sched-loc plain">📍 {item.location}</span>
         )}
+        {item.booking && <BookingRef value={item.booking} />}
       </div>
     </div>
   );
