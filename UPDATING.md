@@ -14,7 +14,7 @@ then tap **Refresh schedule** in the app — no code changes, no redeploy.
    `SHEET_GID` in `assets/config.js`. The current tab is gid `105940139`.
 4. In the **first row**, put these column headers (order doesn't matter, spelling does):
 
-   | Date | Day | Start | End | Activity | Location | Map Link | Details | Booking Reference |
+   | Date | Day | Start | End | Activity | Location | Map Link | Details | Booking Reference | Tour Provider |
 
 5. Fill one row per activity. The repo includes **`schedule-template.csv`**
    pre-filled from your current sheet — open it, copy everything, and paste into
@@ -38,6 +38,9 @@ then tap **Refresh schedule** in the app — no code changes, no redeploy.
   monospace field in the app with a one-tap **Copy** button. (The column header
   is matched loosely, so `Booking Reference`, `Booking Ref`, or `Booking
   Reference:` all work.)
+- **Tour Provider** — the operator/company (e.g. "Anderson Tours"). Shown with a
+  👤 person icon in the app. If you add a Provider/Operator/Tour column to
+  Sheet1, the sync fills this automatically; otherwise type it here directly.
 
 Leave a cell blank if it doesn't apply. Empty rows are ignored.
 

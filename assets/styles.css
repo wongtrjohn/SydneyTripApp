@@ -155,6 +155,7 @@ a { color: var(--accent); }
 .sched-detail { font-size: .83rem; color: var(--text-muted); }
 .sched-loc { font-size: .82rem; word-break: break-word; }
 .sched-loc.plain { color: var(--text-muted); }
+.sched-provider { font-size: .82rem; color: var(--accent); font-weight: 600; word-break: break-word; }
 
 /* ── Booking reference box ── */
 .booking-box {

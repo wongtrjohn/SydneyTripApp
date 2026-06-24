@@ -160,6 +160,7 @@ function buildDays(objs) {
       activity, location: clean(o.location || ""), maplink: o.maplink || o.link || "",
       details: clean(o.details || o.detail || o.notes || ""),
       booking: clean(o.bookingreference || o.bookingref || o.booking || ""),
+      provider: clean(o.tourprovider || o.provider || o.operator || ""),
       _min: parseMin(o.start || o.time || ""),
     });
   }
@@ -246,6 +247,7 @@ function ScheduleItem({ item, state }) {
             ? <a className="sched-loc" href={link} target="_blank" rel="noopener noreferrer">📍 {item.location}</a>
             : <span className="sched-loc plain">📍 {item.location}</span>
         )}
+        {item.provider && <span className="sched-provider">👤 {item.provider}</span>}
         {item.booking && <BookingRef value={item.booking} />}
       </div>
     </div>

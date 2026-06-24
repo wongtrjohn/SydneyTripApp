@@ -61,7 +61,8 @@ function syncToSchedule() {
     return -1;
   };
   var cDate = find(["DATE"]), cDay = find(["DAY"]), cAct = find(["ACTIVITY"]),
-      cTime = find(["TIME"]), cPlace = find(["PLACE", "MEETING"]), cBook = find(["BOOK", "REF"]);
+      cTime = find(["TIME"]), cPlace = find(["PLACE", "MEETING"]), cBook = find(["BOOK", "REF"]),
+      cProv = find(["PROVIDER", "OPERATOR", "TOUR", "AGENT", "COMPANY"]);
 
   // Walk the rows, grouping each day-block.
   var days = [], cur = null;
@@ -70,7 +71,7 @@ function syncToSchedule() {
     var rawDate = cDate >= 0 ? String(row[cDate]).trim() : "";
     if (isDate_(rawDate)) {
       cur = { date: rawDate, day: cDay >= 0 ? String(row[cDay]).trim() : "",
-              acts: [], times: [], places: [], books: [] };
+              acts: [], times: [], places: [], books: [], provs: [] };
       days.push(cur);
     }
     if (!cur) continue; // skip anything before the first dated row (incl. the TIME/PLACE sub-header)
@@ -78,11 +79,12 @@ function syncToSchedule() {
     pushIf_(cur.times,  cTime,  row);
     pushIf_(cur.places, cPlace, row);
     pushIf_(cur.books,  cBook,  row);
+    pushIf_(cur.provs,  cProv,  row);
   }
 
   // Build the flat rows.
-  var out = [["Date", "Day", "Start", "End", "Activity", "Location", "Map Link", "Details", "Booking Reference"]];
-  var COLS = 9;
+  var out = [["Date", "Day", "Start", "End", "Activity", "Location", "Map Link", "Details", "Booking Reference", "Tour Provider"]];
+  var COLS = 10;
   days.forEach(function (d) {
     var start = "";
     for (var t = 0; t < d.times.length; t++) { if (d.times[t]) { start = normTime_(d.times[t]); break; } }
@@ -98,6 +100,7 @@ function syncToSchedule() {
       "",
       details.join(" · "),
       d.books.join(", "),   // Booking Reference — its own column
+      d.provs.map(titleCase_).join(", "),   // Tour Provider — its own column
     ]);
   });
 
