@@ -29,11 +29,16 @@ then tap **Refresh schedule** in the app — no code changes, no redeploy.
 - **Start / End** — `9:30 AM`, `4:00 PM`, `16:00`. Used for ordering and for the
   live **Now / Next** highlight (in Sydney time).
 - **Activity** — the title shown in bold.
-- **Location** — shown with a 📍. Automatically becomes a tappable Google Maps
-  link unless you fill **Map Link**.
+- **Location** — a clean address, shown with a 📍 and a tappable Google Maps
+  link (unless you fill **Map Link**). When syncing from Sheet1, this is filled
+  **only** from a dedicated `Location`/`Address` column — add one to Sheet1 with a
+  tidy address if you want the map pin. (The free-form meeting-place column is
+  treated as notes and goes into Details instead, since guessing one address from
+  it was unreliable.)
 - **Map Link** — optional. Paste a specific URL (Google Maps, a venue page, a
   booking link) to override the automatic maps search.
-- **Details** — small print under the activity (notes, group, what to bring).
+- **Details** — small print under the activity (notes, group, meeting points,
+  landmarks). When syncing from Sheet1, the whole meeting-place column lands here.
 - **Booking Reference** — confirmation/booking code. Shown in its own boxed,
   monospace field in the app with a one-tap **Copy** button. (The column header
   is matched loosely, so `Booking Reference`, `Booking Ref`, or `Booking
